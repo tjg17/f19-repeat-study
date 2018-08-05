@@ -3,19 +3,19 @@ clear;clc;
 home = pwd;
 
 %% Subject Groups
-all = [2;3;4;5;7;8;9;10;12;13;14;15;16;17;18;19;20;24;25;26;28;29;30;31;32;33;34;35;37;39;40;41];
+all = ['13A','13B','18A','18B','28A','28B','32A','32B','33A','33B','42A','42B'];
 normals = [2;3;4;5;15;16;17;19;26;31;37;39;40;41];
 mild = [9;13;18;20;24;25;28;29;30;32;33;35];
 moderate = [7;8;10;12;14;34];
 
 %% Choose Parameters for Running
 % Choose patients
-patients = 5;
+patients = ('013A');
 % MIP image - 2 1
 PlotMIPImageBool = 0;
 SaveMIPImageBool = 0;
 % RGB Image - figure 2
-PlotRGBImageBool = 0;
+PlotRGBImageBool = 1;
 SaveRGBImageBool = 0;
 % Six Segment Image - figure 3
 PlotSixSegmentModelBool = 0; 
@@ -28,20 +28,20 @@ WriteCSVVentilationDataBool = 0;
 WriteTau1DataBool = 0;
 
 %% Loop through selected subjects
-for i = 1:length(patients)
+for i = 1:size(patients,1)
     %% Load and Format Initial Imaging Data
     % load f19 ventilaion
     %cd('G:\2017-Glass\mim\f19_ventilation_segmentations')
-    cd('.\data\f19_ventilation_segmentations')
-    filename = strcat('0509-',num2str(patients(i),'%03d'),'.mat');
+    cd('.\data')
+    filename = strcat('0509-',patients(i,:),'_f19.mat');
     load(filename);
     % format fixed F19 image to same size as moving 1h mri
     fixed = imresize(roi,[128,128]);
     cd(home)
     
     % load anatomical 1h mri
-    cd('.\data\inspiration_anatomic_segmentations')
-    filename = strcat('0509-',num2str(patients(i),'%03d'),'.mat');
+    cd('.\data')
+    filename = strcat('0509-',patients(i,:),'_anat.mat');
     load(filename)
     % format anatomical 1h mri moving image
     moving = imresize(inspiration_ROI, [128,128]);
@@ -71,7 +71,7 @@ for i = 1:length(patients)
     
     %% Plot F19 Histogram on Figure 4 if selected
     if PlotF19HistogramBool
-        [P90data(i) , meantop10data(i)] = PlotF19Histogram(patients(i), f19_lung);
+        [P90data(i) , meantop10data(i)] = PlotF19Histogram(patients(i,:), f19_lung);
     end
     
     %% Compute Values for lowvent, midvent, highvent
@@ -79,11 +79,11 @@ for i = 1:length(patients)
     
     %% Plot MIP Image on Figure 1 if Selected
     if PlotMIPImageBool
-        PlotMIPImage(patients(i), SaveMIPImageBool, f19_lung, low_vent(i), high_vent(i))
+        PlotMIPImage(patients(i,:), SaveMIPImageBool, f19_lung, low_vent(i), high_vent(i))
     end
     
     %% Create and Plot RGB Maps on Figure 2 if selected
-    [f19_rgb , UnventilatedMap ,  LowVentMap , MiddleVentMap , HighVentMap] = PlotRGB_f19(patients(i),PlotRGBImageBool,SaveRGBImageBool,f19_lung, 0.5, low_vent(i), mid_vent(i), high_vent(i));
+    [f19_rgb , UnventilatedMap ,  LowVentMap , MiddleVentMap , HighVentMap] = PlotRGB_f19(patients(i,:),PlotRGBImageBool,SaveRGBImageBool,f19_lung, 0.5, low_vent(i), mid_vent(i), high_vent(i));
     
     %% Create 6 Segment Model and Compute Volumes of Segments
     [ UpperLeft, MiddleLeft, LowerLeft, UpperRight, MiddleRight, LowerRight ] = ComputeSixLungSegments( MOVING_transformed );
@@ -96,7 +96,7 @@ for i = 1:length(patients)
     
     %% Plot Six Segment Model on Figure 3 if Selected
     if PlotSixSegmentModelBool
-        PlotSixLungSegmentsRGB(patients(i) , SaveSixSegmentModelBool,UpperLeft, MiddleLeft, LowerLeft, UpperRight, MiddleRight, LowerRight)
+        PlotSixLungSegmentsRGB(patients(i,:) , SaveSixSegmentModelBool,UpperLeft, MiddleLeft, LowerLeft, UpperRight, MiddleRight, LowerRight)
     end
     
     %% Return home
@@ -116,7 +116,7 @@ for i = 1:length(patients)
         first_PFP = first_last_PFP_data(2,:);
         last_PFP = first_last_PFP_data(3,:);
         % print when starting
-        fprintf('\n\n\nStarting Patient %03d', patients(i))
+        fprintf('\n\n\nStarting Patient %03d', patients(i,:))
         % Get mask for ventilated pixels from MIIT using threshold
         ROI_VentilationDynamics = f19_lung > low_vent(i);
         % Process Split Fit
@@ -124,9 +124,9 @@ for i = 1:length(patients)
         % Get mask variable
         [ PixelAverageMeans , mask ] = ComputePixelAverageIn3DROI( f19_RAW, ROI_VentilationDynamics );
         % Plot Results
-        PlotSplitFitResultsv2( patients(i), './outputs/f19_fit_figures/', tau1, tau2, dF, d0, r2_Washin, r2_Washout, mask )
+        PlotSplitFitResultsv2( patients(i,:), './outputs/f19_fit_figures/', tau1, tau2, dF, d0, r2_Washin, r2_Washout, mask )
         % Save Parameters
-        SaveFitParameterData(patients(i), './outputs/f19_fit_parameters/', tau1, tau2, dF, d0)
+        SaveFitParameterData(patients(i,:), './outputs/f19_fit_parameters/', tau1, tau2, dF, d0)
     end
     
 end
