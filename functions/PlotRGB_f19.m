@@ -66,7 +66,7 @@ if PlotRGBImageBool
     
     subplot(4,4,1)
     imshow(squeeze(RGB_F19_MATRIX(:,:,2,:)))
-    title(sprintf('Subject %i', patientNumber))
+    title(sprintf('Subject %s', patientNumber))
     subplot(4,4,2)
     imshow(squeeze(RGB_F19_MATRIX(:,:,3,:)))
     subplot(4,4,3)

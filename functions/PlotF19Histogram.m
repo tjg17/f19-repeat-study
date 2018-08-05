@@ -6,7 +6,7 @@ f19_insidelung_MIIT_data = f19MIITData3D(find(f19MIITData3D>0));
 %% Plot histogram
 figure(4);clf
 histogram(f19_insidelung_MIIT_data)
-title(sprintf('Subject %i', patientNumber))
+title(sprintf('Subject %s', patientNumber))
 
 %% Get 95 percentile and mean of top 5% data
 P90data = prctile(f19_insidelung_MIIT_data,90);

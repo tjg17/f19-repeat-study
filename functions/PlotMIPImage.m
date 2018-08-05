@@ -4,7 +4,7 @@ function [  ] = PlotMIPImage( PatientNumber, SaveMIPImageBool, f19_lung , low_ve
 
 % Initialize Plot
 figure(1);clf
-plot_title = sprintf('Subject %i', PatientNumber);
+plot_title = sprintf('Subject %s', PatientNumber);
 window_f19 = [low_vent high_vent];
 
 % Plot using subplot

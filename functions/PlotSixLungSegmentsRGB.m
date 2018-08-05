@@ -60,7 +60,7 @@ figure(3);clf
 
 subplot(4,4,1)
 imshow(squeeze(RGB_Six_Segments(:,:,2,:)))
-title(sprintf('Subject %i', patientNumber))
+title(sprintf('Subject %s', patientNumber))
 subplot(4,4,2)
 imshow(squeeze(RGB_Six_Segments(:,:,3,:)))
 subplot(4,4,3)
