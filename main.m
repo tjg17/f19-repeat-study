@@ -10,12 +10,12 @@ moderate = [7;8;10;12;14;34];
 
 %% Choose Parameters for Running
 % Choose patients
-patients = ('013A');
+patients = ['013A';'013B';'018A';'028A'];
 % MIP image - 2 1
 PlotMIPImageBool = 0;
 SaveMIPImageBool = 0;
 % RGB Image - figure 2
-PlotRGBImageBool = 1;
+PlotRGBImageBool = 0;
 SaveRGBImageBool = 0;
 % Six Segment Image - figure 3
 PlotSixSegmentModelBool = 0; 
@@ -23,7 +23,7 @@ SaveSixSegmentModelBool =0;
 % F19 histogram image - figure 4
 PlotF19HistogramBool = 0; 
 % Save CSV ventilation data to file
-WriteCSVVentilationDataBool = 0;
+WriteCSVVentilationDataBool = 1;
 % Save tau1 data to file
 WriteTau1DataBool = 0;
 
@@ -143,7 +143,7 @@ meanMaxVent = mean(max_vent)
 %% Write Ventilation Data to CSV if Selected
 if WriteCSVVentilationDataBool
     % create data matrix
-    f19DataMatrix = [patients AnatomicVolumes' UnventilatedVolumes' LowVentilatedVolumes' MiddleVentilatedVolumes' HighVentilatedVolumes'...
+    f19DataMatrix = [string(patients) AnatomicVolumes' UnventilatedVolumes' LowVentilatedVolumes' MiddleVentilatedVolumes' HighVentilatedVolumes'...
                      100*UnventilatedVolumes'./AnatomicVolumes' 100*LowVentilatedVolumes'./AnatomicVolumes' ...
                      100*MiddleVentilatedVolumes'./AnatomicVolumes' 100*HighVentilatedVolumes'./AnatomicVolumes'];
     % make header
@@ -154,7 +154,8 @@ if WriteCSVVentilationDataBool
     %write header to file
     fid = fopen('.\outputs\F19ventilationdata.csv','w');
     fprintf(fid,'%s\n',textHeader);
+    for index = 1:size(patients,1)
+        fprintf(fid,'%s,%f,%f,%f,%f,%f,%f,%f,%f,%f\n',f19DataMatrix(index,:));
+    end
     fclose(fid);
-    %write data to end of file
-    dlmwrite('.\outputs\F19ventilationdata.csv',f19DataMatrix,'-append');    
 end
